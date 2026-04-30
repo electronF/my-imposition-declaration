@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AxOvide — Téléverser vos documents</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ─── TOKENS (identiques à axovide.html) ───────────────── */
+    :root {
+      --ink:       #0d1117;
+      --paper:     #f5f0e8;
+      --cream:     #ede8dc;
+      --accent:    #1a4d3e;
+      --accent-lt: #2e7d5e;
+      --red:       #b5361c;
+      --gold:      #c8a84b;
+      --border:    #c9c3b5;
+      --muted:     #6b6557;
+      --field-bg:  #faf8f3;
+      --shadow:    0 2px 12px rgba(13,17,23,.08);
+      --r:         4px;
+
+      --font-head: 'Playfair Display', Georgia, serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    /* ─── RESET ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--paper);
+      color: var(--ink);
+      width: 400px;
+      min-height: 560px;
+      font-size: 14px;
+      overflow-x: hidden;
+    }
+
+    /* ─── HEADER ─────────────────────────────────────────────── */
+    .header {
+      background: var(--accent);
+      color: #fff;
+      padding: .9rem 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .header-logo img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+      opacity: .9;
+    }
+
+    .header-logo-text {}
+
+    .wordmark {
+      font-family: var(--font-head);
+      font-size: 1.2rem;
+      letter-spacing: .04em;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .wordmark span { color: var(--gold); }
+
+    .tagline {
+      font-family: var(--font-mono);
+      font-size: .6rem;
+      letter-spacing: .1em;
+      color: rgba(255,255,255,.5);
+      text-transform: uppercase;
+      margin-top: .1rem;
+    }
+
+    .header-year {
+      font-family: var(--font-mono);
+      font-size: .65rem;
+      background: rgba(255,255,255,.12);
+      padding: .25rem .6rem;
+      border-radius: 2px;
+      letter-spacing: .08em;
+      color: rgba(255,255,255,.8);
+    }
+
+    /* ─── CORPS ──────────────────────────────────────────────── */
+    .body {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .85rem;
+    }
+
+    /* ─── INTRO ──────────────────────────────────────────────── */
+    .intro {
+      text-align: center;
+      padding: .5rem 0 .25rem;
+      animation: fadeUp .35s ease both;
+    }
+
+    .intro h2 {
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: .2rem;
+    }
+
+    .intro p {
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      color: var(--muted);
+      letter-spacing: .04em;
+    }
+
+    .intro .fleuron { color: var(--gold); margin: 0 .3rem; }
+
+    /* ─── ZONE DE DÉPÔT FICHIER ──────────────────────────────── */
+    .drop-zone {
+      background: var(--field-bg);
+      border: 1.5px dashed var(--border);
+      border-radius: var(--r);
+      padding: .85rem 1rem;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      position: relative;
+      animation: fadeUp .4s ease both;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.drag-over {
+      border-color: var(--accent);
+      background: rgba(26,77,62,.04);
+    }
+
+    .drop-zone.has-file {
+      border-style: solid;
+      border-color: var(--accent);
+      background: rgba(26,77,62,.05);
+    }
+
+    .drop-zone.error {
+      border-color: var(--red);
+      background: rgba(181,54,28,.04);
+    }
+
+    /* Input caché — déclenché par clic sur la zone */
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .drop-zone-inner {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      pointer-events: none;
+    }
+
+    /* Icône document */
+    .doc-icon {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+      border-radius: var(--r);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      transition: background .2s, border-color .2s;
+    }
+
+    .drop-zone.has-file .doc-icon {
+      background: rgba(26,77,62,.12);
+      border-color: var(--accent-lt);
+    }
+
+    .drop-zone.error .doc-icon {
+      background: rgba(181,54,28,.1);
+      border-color: var(--red);
+    }
+
+    .drop-zone-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .drop-zone-label {
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      margin-bottom: .15rem;
+    }
+
+    .doc-name {
+      font-size: .8rem;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: .01em;
+    }
+
+    .doc-badge {
+      font-family: var(--font-mono);
+      font-size: .6rem;
+      font-weight: 500;
+      background: var(--cream);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      padding: .05rem .35rem;
+      border-radius: 2px;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+
+    .doc-required {
+      color: var(--red);
+      font-size: .85em;
+      margin-left: .1rem;
+    }
+
+    .drop-zone-hint {
+      font-family: var(--font-mono);
+      font-size: .65rem;
+      color: var(--muted);
+      letter-spacing: .02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Nom du fichier sélectionné */
+    .file-selected-name {
+      font-family: var(--font-mono);
+      font-size: .65rem;
+      color: var(--accent);
+      font-weight: 500;
+      letter-spacing: .02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Bouton supprimer fichier */
+    .btn-remove {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: .9rem;
+      padding: .2rem;
+      border-radius: 2px;
+      flex-shrink: 0;
+      pointer-events: all;
+      transition: color .15s;
+      line-height: 1;
+    }
+
+    .btn-remove:hover { color: var(--red); }
+
+    /* Message d'erreur sous la zone */
+    .drop-zone-error {
+      font-family: var(--font-mono);
+      font-size: .65rem;
+      color: var(--red);
+      margin-top: .3rem;
+      display: none;
+      padding-left: .25rem;
+    }
+
+    .drop-zone.error + .drop-zone-error,
+    .drop-zone-error.visible { display: block; }
+
+    /* ─── SÉPARATEUR ─────────────────────────────────────────── */
+    .divider {
+      border: none;
+      border-top: 1px dashed var(--border);
+      margin: .1rem 0;
+    }
+
+    /* ─── ZONE DE STATUT ─────────────────────────────────────── */
+    .status-bar {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: .6rem .85rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      color: var(--muted);
+      min-height: 36px;
+      animation: fadeUp .5s ease both;
+    }
+
+    .status-bar.loading {
+      border-color: var(--gold);
+      color: var(--ink);
+    }
+
+    .status-bar.success {
+      border-color: var(--accent-lt);
+      background: rgba(26,77,62,.06);
+      color: var(--accent);
+    }
+
+    .status-bar.error {
+      border-color: var(--red);
+      background: rgba(181,54,28,.04);
+      color: var(--red);
+    }
+
+    .status-icon {
+      font-size: .85rem;
+      flex-shrink: 0;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ─── BOUTON PRINCIPAL ───────────────────────────────────── */
+    .btn-primary {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--r);
+      padding: .7rem 1rem;
+      font-family: var(--font-body);
+      font-size: .85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      letter-spacing: .02em;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      animation: fadeUp .55s ease both;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-lt);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(26,77,62,.3);
+    }
+
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-primary:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    /* ─── COMPTEUR FICHIERS ──────────────────────────────────── */
+    .files-counter {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: .65rem;
+      color: var(--muted);
+      letter-spacing: .04em;
+    }
+
+    .files-counter strong {
+      color: var(--accent);
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    .footer {
+      text-align: center;
+      padding: .6rem 1rem .75rem;
+      font-family: var(--font-mono);
+      font-size: .6rem;
+      color: var(--border);
+      letter-spacing: .06em;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .footer a:hover { color: var(--accent); }
+
+    /* ─── ANIMATIONS ─────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Délais en cascade pour les zones de dépôt */
+    .drop-zone:nth-of-type(1) { animation-delay: .05s; }
+    .drop-zone:nth-of-type(2) { animation-delay: .10s; }
+    .drop-zone:nth-of-type(3) { animation-delay: .15s; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════
+       HEADER
+  ═════════════════════════════════════════ -->
+  <header class="header" role="banner">
+    <div class="header-logo">
+      <img src="../assets/logo.png" alt="Logo AxOvide" />
+      <div class="header-logo-text">
+        <div class="wordmark">Ax<span>O</span>vide</div>
+        <div class="tagline">Déclaration de revenus · Québec</div>
+      </div>
+    </div>
+    <div class="header-year">2024</div>
+  </header>
+
+  <!-- ══════════════════════════════════════
+       CORPS PRINCIPAL
+  ═════════════════════════════════════════ -->
+  <main class="body" role="main">
+
+    <!-- Titre intro -->
+    <div class="intro">
+      <h2>Téléverser vos documents</h2>
+      <p>Province de Québec <span class="fleuron">⚜</span> Exercice fiscal 2024</p>
+    </div>
+
+    <!-- ── ZONE 1 : CV ──────────────────────────────────── -->
+    <div class="drop-zone" id="zone-cv" role="button" aria-label="Zone de dépôt pour le CV" tabindex="0">
+      <input
+        type="file"
+        id="input-cv"
+        accept=".pdf,.doc,.docx"
+        aria-hidden="true"
+      />
+      <div class="drop-zone-inner">
+        <div class="doc-icon" id="icon-cv">📄</div>
+        <div class="drop-zone-text">
+          <div class="drop-zone-label">
+            <span class="doc-name">Curriculum Vitae</span>
+            <span class="doc-badge">CV</span>
+            <span class="doc-required">*</span>
+          </div>
+          <div class="drop-zone-hint" id="hint-cv">
+            Glisser-déposer ou cliquer — PDF, DOC, DOCX
+          </div>
+        </div>
+        <button class="btn-remove" id="remove-cv" aria-label="Retirer le CV" style="display:none">✕</button>
+      </div>
+    </div>
+    <div class="drop-zone-error" id="error-cv"></div>
+
+    <!-- ── ZONE 2 : T4 ──────────────────────────────────── -->
+    <div class="drop-zone" id="zone-t4" role="button" aria-label="Zone de dépôt pour le T4" tabindex="0">
+      <input
+        type="file"
+        id="input-t4"
+        accept=".pdf"
+        aria-hidden="true"
+      />
+      <div class="drop-zone-inner">
+        <div class="doc-icon" id="icon-t4">🧾</div>
+        <div class="drop-zone-text">
+          <div class="drop-zone-label">
+            <span class="doc-name">Feuillet T4</span>
+            <span class="doc-badge">T4</span>
+            <span class="doc-required">*</span>
+          </div>
+          <div class="drop-zone-hint" id="hint-t4">
+            Glisser-déposer ou cliquer — PDF uniquement
+          </div>
+        </div>
+        <button class="btn-remove" id="remove-t4" aria-label="Retirer le T4" style="display:none">✕</button>
+      </div>
+    </div>
+    <div class="drop-zone-error" id="error-t4"></div>
+
+    <!-- ── ZONE 3 : RL-1 ────────────────────────────────── -->
+    <div class="drop-zone" id="zone-rl1" role="button" aria-label="Zone de dépôt pour le RL-1" tabindex="0">
+      <input
+        type="file"
+        id="input-rl1"
+        accept=".pdf"
+        aria-hidden="true"
+      />
+      <div class="drop-zone-inner">
+        <div class="doc-icon" id="icon-rl1">📋</div>
+        <div class="drop-zone-text">
+          <div class="drop-zone-label">
+            <span class="doc-name">Relevé 1</span>
+            <span class="doc-badge">RL-1</span>
+            <span class="doc-required">*</span>
+          </div>
+          <div class="drop-zone-hint" id="hint-rl1">
+            Glisser-déposer ou cliquer — PDF uniquement
+          </div>
+        </div>
+        <button class="btn-remove" id="remove-rl1" aria-label="Retirer le RL-1" style="display:none">✕</button>
+      </div>
+    </div>
+    <div class="drop-zone-error" id="error-rl1"></div>
+
+    <hr class="divider" />
+
+    <!-- Compteur de fichiers -->
+    <div class="files-counter" id="files-counter">
+      <strong>0</strong> / 3 documents sélectionnés
+    </div>
+
+    <!-- ── BARRE DE STATUT ─────────────────────────────── -->
+    <div class="status-bar" id="status-bar" role="status" aria-live="polite">
+      <span class="status-icon">📎</span>
+      <span id="status-text">Sélectionnez vos trois documents pour continuer.</span>
+    </div>
+
+    <!-- ── BOUTON ENVOYER ──────────────────────────────── -->
+    <button
+      class="btn-primary"
+      id="btn-submit"
+      type="button"
+      disabled
+      aria-label="Envoyer les documents au serveur"
+    >
+      <span id="btn-label">Envoyer les documents</span>
+    </button>
+
+  </main>
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+  ═════════════════════════════════════════ -->
+  <footer class="footer">
+    AxOvide &nbsp;·&nbsp; Déclaration provinciale &nbsp;·&nbsp; 2024
+  </footer>
+
+  <!-- ── SCRIPT (chargé en dernier, pas de logique inline) ── -->
+  <script src="popup.js"></script>
+
+</body>
+</html>
