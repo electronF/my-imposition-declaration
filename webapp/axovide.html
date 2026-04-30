@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AxOvide — Déclaration de revenus · Québec</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --ink:        #0d1117;
+      --paper:      #f5f0e8;
+      --cream:      #ede8dc;
+      --accent:     #1a4d3e;
+      --accent-lt:  #2e7d5e;
+      --red:        #b5361c;
+      --gold:       #c8a84b;
+      --border:     #c9c3b5;
+      --muted:      #6b6557;
+      --field-bg:   #faf8f3;
+      --shadow:     0 2px 12px rgba(13,17,23,.08);
+      --r:          4px;
+      --font-head:  'Playfair Display', Georgia, serif;
+      --font-body:  'DM Sans', sans-serif;
+      --font-mono:  'DM Mono', monospace;
+    }
+
+    /* ─── RESET ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 15px; }
+    body {
+      font-family: var(--font-body);
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    input, select, textarea { font-family: inherit; font-size: inherit; }
+
+    /* ─── HEADER ─────────────────────────────────────────────── */
+    #header {
+      background: var(--accent);
+      color: #fff;
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 20px rgba(0,0,0,.25);
+    }
+    #header-logo {
+      display: flex;
+      align-items: baseline;
+      gap: .5rem;
+    }
+    #header-logo .wordmark {
+      font-family: var(--font-head);
+      font-size: 1.7rem;
+      letter-spacing: .04em;
+      color: #fff;
+    }
+    #header-logo .wordmark span { color: var(--gold); }
+    #header-logo .tagline {
+      font-size: .72rem;
+      font-family: var(--font-mono);
+      letter-spacing: .12em;
+      color: rgba(255,255,255,.55);
+      text-transform: uppercase;
+    }
+    #header-year {
+      font-family: var(--font-mono);
+      font-size: .8rem;
+      background: rgba(255,255,255,.12);
+      padding: .3rem .8rem;
+      border-radius: 2px;
+      letter-spacing: .08em;
+    }
+
+    /* ─── PROGRESS BAR ───────────────────────────────────────── */
+    #progress-wrap {
+      background: var(--cream);
+      border-bottom: 1px solid var(--border);
+      padding: .75rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    #progress-bar-track {
+      flex: 1;
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    #progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
+      width: 0%;
+      transition: width .4s ease;
+      border-radius: 99px;
+    }
+    #progress-label {
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      color: var(--muted);
+      white-space: nowrap;
+      letter-spacing: .06em;
+    }
+
+    /* ─── LAYOUT ─────────────────────────────────────────────── */
+    #app-wrapper {
+      max-width: 960px;
+      margin: 2.5rem auto 4rem;
+      padding: 0 1.5rem;
+    }
+
+    /* ─── PAGE TITLE ─────────────────────────────────────────── */
+    #page-title {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      animation: fadeUp .5s ease both;
+    }
+    #page-title h1 {
+      font-family: var(--font-head);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: .3rem;
+    }
+    #page-title p {
+      font-size: .85rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      letter-spacing: .06em;
+    }
+    #page-title .fleuron { color: var(--gold); margin: 0 .4rem; }
+
+    /* ─── SECTION CARD ───────────────────────────────────────── */
+    .section-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      animation: fadeUp .45s ease both;
+    }
+    .section-card:nth-child(1) { animation-delay: .05s; }
+    .section-card:nth-child(2) { animation-delay: .1s; }
+    .section-card:nth-child(3) { animation-delay: .15s; }
+    .section-card:nth-child(4) { animation-delay: .2s; }
+    .section-card:nth-child(5) { animation-delay: .25s; }
+    .section-card:nth-child(6) { animation-delay: .3s; }
+
+    .section-header {
+      background: var(--cream);
+      border-bottom: 1px solid var(--border);
+      padding: .85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .section-header:hover { background: #e8e3d7; }
+    .section-number {
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      font-weight: 500;
+      background: var(--accent);
+      color: #fff;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      letter-spacing: 0;
+    }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: 1.05rem;
+      font-weight: 600;
+      flex: 1;
+    }
+    .section-chevron {
+      font-size: .9rem;
+      color: var(--muted);
+      transition: transform .25s;
+    }
+    .section-card.collapsed .section-chevron { transform: rotate(-90deg); }
+    .section-body {
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem 1.5rem;
+    }
+    .section-body.full-width { grid-template-columns: 1fr; }
+    .section-card.collapsed .section-body { display: none; }
+
+    /* ─── FIELD ──────────────────────────────────────────────── */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+    }
+    .field.span-2 { grid-column: span 2; }
+    .field label {
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+    }
+    .field label .req { color: var(--red); font-size: .9em; }
+    .field label .code {
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      background: var(--cream);
+      color: var(--accent);
+      padding: .05rem .3rem;
+      border-radius: 2px;
+      letter-spacing: .04em;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      background: var(--field-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: .55rem .75rem;
+      font-size: .9rem;
+      color: var(--ink);
+      transition: border-color .2s, box-shadow .2s;
+      width: 100%;
+    }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(26,77,62,.1);
+      background: #fff;
+    }
+    .field input.error,
+    .field select.error { border-color: var(--red); }
+    .field .hint {
+      font-size: .73rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+    .field .err-msg {
+      font-size: .73rem;
+      color: var(--red);
+      display: none;
+    }
+    .field.invalid .err-msg { display: block; }
+    .field.invalid label { color: var(--red); }
+
+    /* ─── MONEY FIELD ────────────────────────────────────────── */
+    .money-wrap {
+      position: relative;
+    }
+    .money-wrap::before {
+      content: "$";
+      position: absolute;
+      left: .75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: .9rem;
+      pointer-events: none;
+    }
+    .money-wrap input { padding-left: 1.5rem; font-family: var(--font-mono); }
+
+    /* ─── DIVIDER ─────────────────────────────────────────────── */
+    .section-divider {
+      grid-column: span 2;
+      border: none;
+      border-top: 1px dashed var(--border);
+      margin: .25rem 0;
+    }
+    .section-sub-title {
+      grid-column: span 2;
+      font-family: var(--font-head);
+      font-size: .9rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: -.25rem;
+    }
+
+    /* ─── NOTIFICATION ZONE ──────────────────────────────────── */
+    #notification-zone {
+      position: fixed;
+      top: 80px; right: 1.5rem;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      max-width: 340px;
+    }
+    .toast {
+      background: #fff;
+      border-left: 4px solid var(--accent);
+      border-radius: var(--r);
+      padding: .8rem 1rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,.15);
+      font-size: .82rem;
+      animation: toastIn .3s ease;
+      display: flex;
+      align-items: flex-start;
+      gap: .5rem;
+    }
+    .toast.error { border-left-color: var(--red); }
+    .toast.success { border-left-color: var(--accent-lt); }
+    .toast-icon { font-size: 1rem; flex-shrink: 0; }
+    .toast-body strong { display: block; margin-bottom: .1rem; }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ─── ACTION BAR ─────────────────────────────────────────── */
+    #action-bar {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: var(--shadow);
+      margin-top: 2rem;
+    }
+    #action-bar .left { display: flex; gap: .75rem; align-items: center; }
+    #action-bar .summary {
+      font-size: .8rem;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+    #action-bar .summary strong { color: var(--ink); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .6rem 1.2rem;
+      border-radius: var(--r);
+      border: none;
+      font-family: var(--font-body);
+      font-size: .85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+      letter-spacing: .02em;
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--accent-lt); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,77,62,.3); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-danger {
+      background: transparent;
+      border: 1px solid var(--red);
+      color: var(--red);
+    }
+    .btn-danger:hover { background: var(--red); color: #fff; }
+    .btn[disabled] { opacity: .45; cursor: not-allowed; transform: none !important; }
+
+    /* ─── MODAL ──────────────────────────────────────────────── */
+    #modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(13,17,23,.55);
+      backdrop-filter: blur(3px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    #modal-overlay.open { display: flex; }
+    #modal-box {
+      background: #fff;
+      border-radius: var(--r);
+      max-width: 500px; width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+      overflow: hidden;
+      animation: modalIn .25s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(.95) translateY(-10px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    #modal-head {
+      background: var(--accent);
+      color: #fff;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    #modal-head h2 { font-family: var(--font-head); font-size: 1.1rem; }
+    #modal-close {
+      background: none; border: none; color: rgba(255,255,255,.7);
+      font-size: 1.2rem; cursor: pointer; line-height: 1;
+    }
+    #modal-close:hover { color: #fff; }
+    #modal-body { padding: 1.5rem; }
+    #modal-body p { font-size: .88rem; color: var(--muted); margin-bottom: 1rem; line-height: 1.6; }
+    #modal-summary {
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 1rem;
+      font-family: var(--font-mono);
+      font-size: .78rem;
+      margin-bottom: 1.25rem;
+      line-height: 1.8;
+    }
+    #modal-summary span { color: var(--muted); }
+    #modal-summary strong { color: var(--ink); }
+    #modal-footer {
+      padding: 1rem 1.5rem;
+      background: var(--cream);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: .75rem;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    #footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: .73rem;
+      color: var(--border);
+      font-family: var(--font-mono);
+      letter-spacing: .08em;
+    }
+    #footer a { color: var(--muted); text-decoration: none; }
+    #footer a:hover { color: var(--accent); }
+
+    /* ─── ANIMATIONS ──────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .section-body { grid-template-columns: 1fr; }
+      .field.span-2 { grid-column: span 1; }
+      .section-divider, .section-sub-title { grid-column: span 1; }
+      #action-bar { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       HEADER
+  ════════════════════════════════════════════════ -->
+  <header id="header" role="banner">
+    <div id="header-logo">
+      <div>
+        <div class="wordmark">Ax<span>O</span>vide</div>
+        <div class="tagline">Déclaration de revenus · Québec</div>
+      </div>
+    </div>
+    <div id="header-year">Année d'imposition 2024</div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════
+       BARRE DE PROGRESSION
+  ════════════════════════════════════════════════ -->
+  <div id="progress-wrap" role="progressbar" aria-label="Progression du formulaire">
+    <div id="progress-bar-track">
+      <div id="progress-bar-fill"></div>
+    </div>
+    <div id="progress-label">0 / 0 champs remplis</div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       ZONE DE NOTIFICATIONS
+  ════════════════════════════════════════════════ -->
+  <div id="notification-zone" aria-live="polite"></div>
+
+  <!-- ═══════════════════════════════════════════════
+       FORMULAIRE PRINCIPAL
+  ════════════════════════════════════════════════ -->
+  <main id="app-wrapper">
+    <div id="page-title">
+      <h1>Déclaration de revenus provinciale</h1>
+      <p>Province de Québec <span class="fleuron">⚜</span> Exercice fiscal 2024</p>
+    </div>
+
+    <form id="tax-form" novalidate>
+
+      <!-- ── SECTION 1 : RENSEIGNEMENTS PERSONNELS ───────── -->
+      <div class="section-card" id="section-1">
+        <div class="section-header" role="button" tabindex="0" aria-expanded="true">
+          <div class="section-number">1</div>
+          <div class="section-title">Renseignements personnels</div>
+          <div class="section-chevron">▾</div>
+        </div>
+        <div class="section-body" id="section-1-body">
+
+          <div class="field" id="field-nom">
+            <label for="nom">Nom de famille <span class="req">*</span></label>
+            <input type="text" id="nom" name="nom" placeholder="Dupont" autocomplete="family-name" required />
+            <div class="err-msg">Ce champ est obligatoire.</div>
+          </div>
+
+          <div class="field" id="field-prenom">
+            <label for="prenom">Prénom <span class="req">*</span></label>
+            <input type="text" id="prenom" name="prenom" placeholder="Marie" autocomplete="given-name" required />
+            <div class="err-msg">Ce champ est obligatoire.</div>
+          </div>
+
+          <div class="field" id="field-nas">
+            <label for="nas">Numéro d'assurance sociale <span class="req">*</span> <span class="code">NAS</span></label>
+            <input type="text" id="nas" name="nas" placeholder="000 000 000" maxlength="11" required />
+            <div class="hint">Format : 000 000 000 (9 chiffres)</div>
+            <div class="err-msg">NAS invalide — 9 chiffres requis.</div>
+          </div>
+
+          <div class="field" id="field-ddn">
+            <label for="ddn">Date de naissance <span class="req">*</span></label>
+            <input type="date" id="ddn" name="ddn" required />
+            <div class="err-msg">Date de naissance requise.</div>
+          </div>
+
+          <div class="field" id="field-langue">
+            <label for="langue">Langue de correspondance <span class="req">*</span></label>
+            <select id="langue" name="langue" required>
+              <option value="">— Sélectionner —</option>
+              <option value="fr" selected>Français</option>
+              <option value="en">English</option>
+            </select>
+            <div class="err-msg">Veuillez sélectionner une langue.</div>
+          </div>
+
+          <div class="field" id="field-etat-civil">
+            <label for="etat-civil">État civil au 31 décembre 2024 <span class="req">*</span></label>
+            <select id="etat-civil" name="etat_civil" required>
+              <option value="">— Sélectionner —</option>
+              <option value="celibataire">Célibataire</option>
+              <option value="marie">Marié(e) ou conjoint(e) de fait</option>
+              <option value="separe">Séparé(e)</option>
+              <option value="divorce">Divorcé(e)</option>
+              <option value="veuf">Veuf / Veuve</option>
+            </select>
+            <div class="err-msg">Veuillez sélectionner votre état civil.</div>
+          </div>
+
+          <hr class="section-divider" />
+          <div class="section-sub-title">Adresse résidentielle</div>
+
+          <div class="field span-2" id="field-adresse">
+            <label for="adresse">Numéro et rue <span class="req">*</span></label>
+            <input type="text" id="adresse" name="adresse" placeholder="123, rue des Érables" autocomplete="street-address" required />
+            <div class="err-msg">L'adresse est obligatoire.</div>
+          </div>
+
+          <div class="field" id="field-ville">
+            <label for="ville">Ville / Municipalité <span class="req">*</span></label>
+            <input type="text" id="ville" name="ville" placeholder="Montréal" required />
+            <div class="err-msg">La ville est obligatoire.</div>
+          </div>
+
+          <div class="field" id="field-code-postal">
+            <label for="code-postal">Code postal <span class="req">*</span></label>
+            <input type="text" id="code-postal" name="code_postal" placeholder="H1A 1A1" maxlength="7" required />
+            <div class="err-msg">Code postal invalide.</div>
+          </div>
+
+          <div class="field" id="field-email">
+            <label for="email">Courriel</label>
+            <input type="email" id="email" name="email" placeholder="marie@exemple.ca" autocomplete="email" />
+            <div class="err-msg">Adresse courriel invalide.</div>
+          </div>
+
+          <div class="field" id="field-tel">
+            <label for="tel">Téléphone</label>
+            <input type="tel" id="tel" name="tel" placeholder="514 555-0100" autocomplete="tel" />
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── SECTION 2 : REVENUS D'EMPLOI ───────────────── -->
+      <div class="section-card" id="section-2">
+        <div class="section-header" role="button" tabindex="0" aria-expanded="true">
+          <div class="section-number">2</div>
+          <div class="section-title">Revenus d'emploi (T4 / RL-1)</div>
+          <div class="section-chevron">▾</div>
+        </div>
+        <div class="section-body" id="section-2-body">
+
+          <div class="field" id="field-employeur">
+            <label for="employeur">Nom de l'employeur</label>
+            <input type="text" id="employeur" name="employeur" placeholder="Entreprise Inc." />
+          </div>
+
+          <div class="field" id="field-neq">
+            <label for="neq">NEQ / Numéro d'employeur <span class="code">case 54</span></label>
+            <input type="text" id="neq" name="neq" placeholder="00000 0000 RT 0001" />
+          </div>
+
+          <div class="field" id="field-revenus-emploi">
+            <label for="revenus-emploi">Revenus d'emploi bruts <span class="req">*</span> <span class="code">case 14</span></label>
+            <div class="money-wrap">
+              <input type="number" id="revenus-emploi" name="revenus_emploi" min="0" step="0.01" placeholder="0.00" required />
+            </div>
+            <div class="err-msg">Veuillez entrer vos revenus d'emploi.</div>
+          </div>
+
+          <div class="field" id="field-cotisation-rq">
+            <label for="cotisation-rq">Cotisation au RRQ <span class="code">case 17</span></label>
+            <div class="money-wrap">
+              <input type="number" id="cotisation-rq" name="cotisation_rq" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="field" id="field-cotisation-rqap">
+            <label for="cotisation-rqap">Cotisation au RQAP <span class="code">case 56</span></label>
+            <div class="money-wrap">
+              <input type="number" id="cotisation-rqap" name="cotisation_rqap" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="field" id="field-cotisation-ae">
+            <label for="cotisation-ae">Cotisation à l'AE <span class="code">case 18</span></label>
+            <div class="money-wrap">
+              <input type="number" id="cotisation-ae" name="cotisation_ae" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="field" id="field-impot-retenu-qc">
+            <label for="impot-retenu-qc">Impôt provincial retenu <span class="req">*</span> <span class="code">case E</span></label>
+            <div class="money-wrap">
+              <input type="number" id="impot-retenu-qc" name="impot_retenu_qc" min="0" step="0.01" placeholder="0.00" required />
+            </div>
+            <div class="err-msg">Veuillez entrer l'impôt retenu.</div>
+          </div>
+
+          <div class="field" id="field-impot-retenu-fed">
+            <label for="impot-retenu-fed">Impôt fédéral retenu <span class="code">case 22</span></label>
+            <div class="money-wrap">
+              <input type="number" id="impot-retenu-fed" name="impot_retenu_fed" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── SECTION 3 : AUTRES REVENUS ─────────────────── -->
+      <div class="section-card" id="section-3">
+        <div class="section-header" role="button" tabindex="0" aria-expanded="true">
+          <div class="section-number">3</div>
+          <div class="section-title">Autres revenus</div>
+          <div class="section-chevron">▾</div>
+        </div>
+        <div class="section-body" id="section-3-body">
+
+          <div class="field" id="field-revenus-autonome">
+            <label for="revenus-autonome">Revenus de travail autonome</label>
+            <div class="money-wrap">
+              <input type="number" id="revenus-autonome" name="revenus_autonome" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="field" id="field-revenus-placement">
+            <label for="revenus-placement">Revenus de placements</label>
+            <div class="money-wrap">
+              <input type="number" id="revenus-placement" name="revenus_placement" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="field" id="field-revenus-loyer">
+            <label for="revenus-loyer">Revenus de location</label>
+            <div class="money-wrap">
+              <input type="number" id="revenus-loyer" name="revenus_loyer" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="field" id="field-revenus-retraite">
+            <label for="revenus-retraite">Revenus de retraite / rentes</label>
+            <div class="money-wrap">
+              <input type="number" id="revenus-retraite" name="revenus_retraite" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="field" id="field-revenus-assurance">
+            <label for="revenus-assurance">Prestations d'assurance-emploi</label>
+            <div class="money-wrap">
+              <input type="number" id="revenus-assurance" name="revenus_assurance" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="field" id="field-gains-capital">
+            <label for="gains-capital">Gains en capital imposables</label>
+            <div class="money-wrap">
+              <input type="number" id="gains-capital" name="gains_capital" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── SECTION 4 : DÉDUCTIONS ──────────────────────── -->
+      <div class="section-card" id="section-4">
+        <div class="section-header" role="button" tabindex="0" aria-expanded="true">
+          <div class="section-number">4</div>
+          <div class="section-title">Déductions et dépenses</div>
+          <div class="section-chevron">▾</div>
+        </div>
+        <div class="section-body" id="section-4-body">
+
+          <div class="field" id="field-cotisation-reer">
+            <label for="cotisation-reer">Cotisations REER</label>
+            <div class="money-wrap">
+              <input type="number" id="cotisation-reer" name="cotisation_reer" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="field" id="field-frais-syndicaux">
+            <label for="frais-syndicaux">Cotisations syndicales / professionnelles</label>
+            <div class="money-wrap">
+              <input type="number" id="frais-syndicaux" name="frais_syndicaux" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="field" id="field-frais-garde">
+            <label for="frais-garde">Frais de garde d'enfants</label>
+            <div class="money-wrap">
+              <input type="number" id="frais-garde" name="frais_garde" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="field" id="field-frais-scolarite">
+            <label for="frais-scolarite">Frais de scolarité</label>
+            <div class="money-wrap">
+              <input type="number" id="frais-scolarite" name="frais_scolarite" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="field" id="field-frais-medicaux">
+            <label for="frais-medicaux">Frais médicaux admissibles</label>
+            <div class="money-wrap">
+              <input type="number" id="frais-medicaux" name="frais_medicaux" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="field" id="field-dons">
+            <label for="dons">Dons de bienfaisance</label>
+            <div class="money-wrap">
+              <input type="number" id="dons" name="dons" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── SECTION 5 : SITUATION FAMILIALE ────────────── -->
+      <div class="section-card" id="section-5">
+        <div class="section-header" role="button" tabindex="0" aria-expanded="true">
+          <div class="section-number">5</div>
+          <div class="section-title">Situation familiale et crédits</div>
+          <div class="section-chevron">▾</div>
+        </div>
+        <div class="section-body" id="section-5-body">
+
+          <div class="field" id="field-nb-enfants">
+            <label for="nb-enfants">Nombre d'enfants à charge (moins de 18 ans)</label>
+            <input type="number" id="nb-enfants" name="nb_enfants" min="0" max="20" placeholder="0" />
+          </div>
+
+          <div class="field" id="field-conjoint-revenu">
+            <label for="conjoint-revenu">Revenu net du conjoint(e)</label>
+            <div class="money-wrap">
+              <input type="number" id="conjoint-revenu" name="conjoint_revenu" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="field" id="field-credit-solida">
+            <label for="credit-solida">Demande du crédit de solidarité</label>
+            <select id="credit-solida" name="credit_solidarite">
+              <option value="oui">Oui</option>
+              <option value="non">Non</option>
+            </select>
+          </div>
+
+          <div class="field" id="field-locataire">
+            <label for="locataire">Statut de résidence en 2024</label>
+            <select id="locataire" name="statut_residence">
+              <option value="locataire">Locataire</option>
+              <option value="proprietaire">Propriétaire</option>
+              <option value="autre">Autre / Chez quelqu'un</option>
+            </select>
+          </div>
+
+          <div class="field" id="field-loyer-paye">
+            <label for="loyer-paye">Loyer payé en 2024 (si locataire)</label>
+            <div class="money-wrap">
+              <input type="number" id="loyer-paye" name="loyer_paye" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+          <div class="field" id="field-taxes-municipales">
+            <label for="taxes-municipales">Taxes municipales 2024 (si propriétaire)</label>
+            <div class="money-wrap">
+              <input type="number" id="taxes-municipales" name="taxes_municipales" min="0" step="0.01" placeholder="0.00" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── SECTION 6 : DÉCLARATION & SIGNATURE ─────────── -->
+      <div class="section-card" id="section-6">
+        <div class="section-header" role="button" tabindex="0" aria-expanded="true">
+          <div class="section-number">6</div>
+          <div class="section-title">Attestation et signature</div>
+          <div class="section-chevron">▾</div>
+        </div>
+        <div class="section-body full-width" id="section-6-body">
+
+          <div class="field" id="field-attestation">
+            <label>
+              <input type="checkbox" id="attestation" name="attestation" required style="margin-right:.5rem;accent-color:var(--accent);" />
+              J'atteste que les renseignements fournis dans cette déclaration sont, à ma connaissance, exacts et complets. <span class="req">*</span>
+            </label>
+            <div class="err-msg">Vous devez cocher cette case pour soumettre.</div>
+          </div>
+
+          <div class="field" id="field-signature">
+            <label for="signature">Nom complet (signature électronique) <span class="req">*</span></label>
+            <input type="text" id="signature" name="signature" placeholder="Marie Dupont" required />
+            <div class="err-msg">La signature électronique est obligatoire.</div>
+          </div>
+
+          <div class="field" id="field-date-signature">
+            <label for="date-signature">Date de signature <span class="req">*</span></label>
+            <input type="date" id="date-signature" name="date_signature" required />
+            <div class="err-msg">La date de signature est obligatoire.</div>
+          </div>
+
+          <div class="field" id="field-notes">
+            <label for="notes">Notes additionnelles</label>
+            <textarea id="notes" name="notes" rows="3" placeholder="Informations complémentaires, le cas échéant…" style="resize:vertical;"></textarea>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── ACTION BAR ─────────────────────────────────── -->
+      <div id="action-bar">
+        <div class="left">
+          <div class="summary" id="form-summary">— champs remplis</div>
+        </div>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+          <button type="button" class="btn btn-ghost" id="btn-reset">↺ Réinitialiser</button>
+          <button type="button" class="btn btn-ghost" id="btn-validate">✓ Vérifier</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit">Soumettre la déclaration →</button>
+        </div>
+      </div>
+
+    </form>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════
+       MODAL DE CONFIRMATION
+  ════════════════════════════════════════════════ -->
+  <div id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div id="modal-box">
+      <div id="modal-head">
+        <h2 id="modal-title">Confirmer la soumission</h2>
+        <button id="modal-close" aria-label="Fermer">✕</button>
+      </div>
+      <div id="modal-body">
+        <p>Veuillez vérifier le résumé de votre déclaration avant de l'envoyer. Cette action transmettra vos données au serveur AxOvide.</p>
+        <div id="modal-summary"></div>
+      </div>
+      <div id="modal-footer">
+        <button class="btn btn-ghost" id="btn-modal-cancel">Annuler</button>
+        <button class="btn btn-primary" id="btn-modal-confirm">Confirmer et envoyer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       PIED DE PAGE
+  ════════════════════════════════════════════════ -->
+  <footer id="footer">
+    <p>AxOvide © 2024 &nbsp;·&nbsp; Extension Chrome &nbsp;·&nbsp;
+      <a href="#">Politique de confidentialité</a> &nbsp;·&nbsp;
+      <a href="#">Support</a>
+    </p>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════
+       SCRIPT
+  ════════════════════════════════════════════════ -->
+  <script>
+  (function () {
+    'use strict';
+
+    /* ── CONFIGURATION ─────────────────────────────────── */
+    const serverUrl = 'https://VOTRE-SERVEUR-ICI/api/declarations';
+
+    /* ── ÉTAT ──────────────────────────────────────────── */
+    const form       = document.getElementById('tax-form');
+    const allInputs  = () => form.querySelectorAll('input, select, textarea');
+    const fillBar    = document.getElementById('progress-bar-fill');
+    const fillLabel  = document.getElementById('progress-label');
+    const formSum    = document.getElementById('form-summary');
+    const notifZone  = document.getElementById('notification-zone');
+    const modalOvl   = document.getElementById('modal-overlay');
+    const modalSum   = document.getElementById('modal-summary');
+
+    /* ── COLLAPSIBLE SECTIONS ──────────────────────────── */
+    document.querySelectorAll('.section-header').forEach(header => {
+      const toggle = () => {
+        const card = header.closest('.section-card');
+        card.classList.toggle('collapsed');
+        const expanded = !card.classList.contains('collapsed');
+        header.setAttribute('aria-expanded', expanded);
+      };
+      header.addEventListener('click', toggle);
+      header.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+      });
+    });
+
+    /* ── FORMATAGE NAS ─────────────────────────────────── */
+    document.getElementById('nas').addEventListener('input', function () {
+      let v = this.value.replace(/\D/g, '').slice(0, 9);
+      if (v.length > 6) v = v.slice(0,3) + ' ' + v.slice(3,6) + ' ' + v.slice(6);
+      else if (v.length > 3) v = v.slice(0,3) + ' ' + v.slice(3);
+      this.value = v;
+    });
+
+    /* ── FORMATAGE CODE POSTAL ─────────────────────────── */
+    document.getElementById('code-postal').addEventListener('input', function () {
+      let v = this.value.replace(/\s/g, '').toUpperCase().slice(0, 6);
+      if (v.length > 3) v = v.slice(0,3) + ' ' + v.slice(3);
+      this.value = v;
+    });
+
+    /* ── DATE PAR DÉFAUT ───────────────────────────────── */
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('date-signature').value = today;
+
+    /* ── MISE À JOUR BARRE DE PROGRESSION ──────────────── */
+    function updateProgress() {
+      const inputs   = Array.from(allInputs()).filter(el => el.type !== 'hidden' && !el.disabled);
+      const filled   = inputs.filter(el => {
+        if (el.type === 'checkbox') return el.checked;
+        return el.value.trim() !== '';
+      });
+      const pct      = inputs.length ? Math.round((filled.length / inputs.length) * 100) : 0;
+      fillBar.style.width = pct + '%';
+      fillLabel.textContent = `${filled.length} / ${inputs.length} champs remplis`;
+      formSum.innerHTML = `<strong>${filled.length}</strong> / ${inputs.length} champs remplis (${pct}%)`;
+    }
+    form.addEventListener('input', updateProgress);
+    form.addEventListener('change', updateProgress);
+    updateProgress();
+
+    /* ── RÈGLES DE VALIDATION ──────────────────────────── */
+    const validators = {
+      nas: v => /^\d{3}\s\d{3}\s\d{3}$/.test(v),
+      email: v => v === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+      'code-postal': v => /^[A-Za-z]\d[A-Za-z]\s\d[A-Za-z]\d$/.test(v),
+      attestation: (_, el) => el.checked,
+    };
+    const required = [
+      'nom', 'prenom', 'nas', 'ddn', 'langue', 'etat-civil',
+      'adresse', 'ville', 'code-postal',
+      'revenus-emploi', 'impot-retenu-qc',
+      'attestation', 'signature', 'date-signature'
+    ];
+
+    function validateField(id) {
+      const el        = document.getElementById(id);
+      const fieldWrap = document.getElementById('field-' + id);
+      if (!el || !fieldWrap) return true;
+
+      const val      = el.value.trim();
+      const isReq    = required.includes(id);
+      const isEmpty  = el.type === 'checkbox' ? !el.checked : val === '';
+      const custVal  = validators[id];
+
+      let ok = true;
+      if (isReq && isEmpty) ok = false;
+      if (!isEmpty && custVal && !custVal(val, el)) ok = false;
+      if (el.type === 'checkbox' && isReq && !el.checked) ok = false;
+
+      fieldWrap.classList.toggle('invalid', !ok);
+      el.classList.toggle('error', !ok);
+      return ok;
+    }
+
+    function validateAll() {
+      const ids = Array.from(form.querySelectorAll('[id]'))
+        .map(el => el.id)
+        .filter(id => document.getElementById('field-' + id));
+
+      let allOk = true;
+      ids.forEach(id => {
+        if (!validateField(id)) allOk = false;
+      });
+      return allOk;
+    }
+
+    /* Live validation on blur */
+    form.addEventListener('blur', e => {
+      if (e.target.id) validateField(e.target.id);
+    }, true);
+
+    /* ── TOAST ─────────────────────────────────────────── */
+    function toast(type, title, msg, duration = 5000) {
+      const icons = { success: '✔', error: '✖', info: 'ℹ' };
+      const t = document.createElement('div');
+      t.className = `toast ${type}`;
+      t.innerHTML = `<div class="toast-icon">${icons[type] || 'ℹ'}</div>
+                     <div class="toast-body"><strong>${title}</strong>${msg ? '<br>' + msg : ''}</div>`;
+      notifZone.appendChild(t);
+      setTimeout(() => t.remove(), duration);
+    }
+
+    /* ── BOUTON VÉRIFIER ───────────────────────────────── */
+    document.getElementById('btn-validate').addEventListener('click', () => {
+      const ok = validateAll();
+      if (ok) {
+        toast('success', 'Vérification réussie', 'Tous les champs obligatoires sont valides.');
+      } else {
+        const errors = form.querySelectorAll('.invalid');
+        // Scroll to first error
+        errors[0]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        toast('error', 'Erreurs détectées', `${errors.length} champ(s) invalide(s) ou manquant(s).`);
+      }
+    });
+
+    /* ── BOUTON RÉINITIALISER ──────────────────────────── */
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      if (!confirm('Voulez-vous vraiment réinitialiser tous les champs ?')) return;
+      form.reset();
+      document.getElementById('date-signature').value = today;
+      form.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+      form.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+      updateProgress();
+      toast('info', 'Formulaire réinitialisé', 'Tous les champs ont été effacés.');
+    });
+
+    /* ── SOUMISSION : OUVRIR MODAL ─────────────────────── */
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const ok = validateAll();
+      if (!ok) {
+        const errors = form.querySelectorAll('.invalid');
+        errors[0]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        toast('error', 'Formulaire incomplet', `Veuillez corriger les ${errors.length} erreur(s) avant de soumettre.`);
+        return;
+      }
+      buildModalSummary();
+      modalOvl.classList.add('open');
+    });
+
+    /* ── MODAL : RÉSUMÉ ────────────────────────────────── */
+    function buildModalSummary() {
+      const get = id => (document.getElementById(id)?.value ?? '').trim();
+      const fmt = n => parseFloat(n || 0).toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' });
+      const totalRev = (
+        parseFloat(get('revenus-emploi') || 0) +
+        parseFloat(get('revenus-autonome') || 0) +
+        parseFloat(get('revenus-placement') || 0) +
+        parseFloat(get('revenus-loyer') || 0) +
+        parseFloat(get('revenus-retraite') || 0) +
+        parseFloat(get('revenus-assurance') || 0) +
+        parseFloat(get('gains-capital') || 0)
+      );
+      const totalDed = (
+        parseFloat(get('cotisation-reer') || 0) +
+        parseFloat(get('frais-syndicaux') || 0) +
+        parseFloat(get('frais-garde') || 0) +
+        parseFloat(get('frais-scolarite') || 0) +
+        parseFloat(get('frais-medicaux') || 0) +
+        parseFloat(get('dons') || 0)
+      );
+      modalSum.innerHTML = `
+        <div><span>Contribuable :</span> <strong>${get('prenom')} ${get('nom')}</strong></div>
+        <div><span>NAS :</span> <strong>${get('nas')}</strong></div>
+        <div><span>Total des revenus :</span> <strong>${fmt(totalRev)}</strong></div>
+        <div><span>Total des déductions :</span> <strong>${fmt(totalDed)}</strong></div>
+        <div><span>Revenu net estimé :</span> <strong>${fmt(totalRev - totalDed)}</strong></div>
+        <div><span>Impôt retenu (prov.) :</span> <strong>${fmt(get('impot-retenu-qc'))}</strong></div>
+        <div><span>Date de signature :</span> <strong>${get('date-signature')}</strong></div>
+      `;
+    }
+
+    /* ── MODAL : FERMER ────────────────────────────────── */
+    const closeModal = () => modalOvl.classList.remove('open');
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+    document.getElementById('btn-modal-cancel').addEventListener('click', closeModal);
+    modalOvl.addEventListener('click', e => { if (e.target === modalOvl) closeModal(); });
+
+    /* ── MODAL : CONFIRMER ET ENVOYER ──────────────────── */
+    document.getElementById('btn-modal-confirm').addEventListener('click', async () => {
+      const btnConfirm = document.getElementById('btn-modal-confirm');
+      btnConfirm.disabled = true;
+      btnConfirm.textContent = 'Envoi en cours…';
+
+      /* Collecte des données du formulaire */
+      const payload = {};
+      new FormData(form).forEach((v, k) => { payload[k] = v; });
+      payload.submitted_at = new Date().toISOString();
+      payload.app_version  = 'AxOvide-1.0';
+
+      try {
+        const response = await fetch(serverUrl, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify(payload),
+        });
+
+        closeModal();
+
+        if (response.ok) {
+          const data = await response.json().catch(() => ({}));
+          toast('success',
+            'Déclaration envoyée !',
+            `Numéro de confirmation : ${data.confirmation_id || 'N/A'}`,
+            8000
+          );
+          /* Optionnel : désactiver le formulaire après envoi */
+          document.getElementById('btn-submit').disabled = true;
+          document.getElementById('btn-submit').textContent = '✓ Déclaration soumise';
+        } else {
+          const err = await response.json().catch(() => ({}));
+          toast('error',
+            `Erreur ${response.status}`,
+            err.detail || 'Une erreur est survenue lors de l\'envoi.',
+            10000
+          );
+        }
+      } catch (networkErr) {
+        closeModal();
+        toast('error',
+          'Erreur réseau',
+          'Impossible de joindre le serveur. Vérifiez votre connexion.',
+          10000
+        );
+        console.error('[AxOvide] Network error:', networkErr);
+      } finally {
+        btnConfirm.disabled = false;
+        btnConfirm.textContent = 'Confirmer et envoyer';
+      }
+    });
+
+    /* ── INIT ──────────────────────────────────────────── */
+    console.log('%c AxOvide v1.0 ', 'background:#1a4d3e;color:#fff;padding:4px 8px;border-radius:3px;font-family:monospace;');
+    console.log('serverUrl:', serverUrl);
+
+  })();
+  </script>
+</body>
+</html>
