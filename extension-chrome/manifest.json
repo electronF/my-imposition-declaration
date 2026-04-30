@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "AxOvide — Déclaration de revenus",
+  "short_name": "AxOvide",
+  "version": "1.0.0",
+  "description": "Téléversez vos documents fiscaux (CV, T4, RL-1) pour remplir automatiquement votre déclaration de revenus québécoise.",
+
+  "icons": {
+    "16":  "assets/favicon.ico",
+    "48":  "assets/logo.png",
+    "128": "assets/logo.png"
+  },
+
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16":  "assets/favicon.ico",
+      "48":  "assets/logo.png",
+      "128": "assets/logo.png"
+    },
+    "default_title": "AxOvide — Téléverser vos documents"
+  },
+
+  "permissions": [
+    "storage"
+  ],
+
+  "host_permissions": [
+    "http://localhost:8000/*",
+    "https://api.axovide.ca/*"
+  ],
+
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none';"
+  },
+
+  "minimum_chrome_version": "116"
+}
