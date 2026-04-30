@@ -110,37 +110,37 @@
   const getExtension = (filename) =>
     filename.slice(filename.lastIndexOf('.')).toLowerCase();
 
-  /**
-   * Valide un fichier selon le type de document.
-   * @param {File} file
-   * @param {'cv'|'t4'|'rl1'} docType
-   * @returns {{ valid: boolean, error?: string }}
-   */
-  const validateFile = (file, docType) => {
-    const ext = getExtension(file.name);
-    const allowed = CONFIG.ACCEPTED[docType];
-    const maxBytes = CONFIG.MAX_SIZE_MB * 1024 * 1024;
+  // /**
+  //  * Valide un fichier selon le type de document.
+  //  * @param {File} file
+  //  * @param {'cv'|'t4'|'rl1'} docType
+  //  * @returns {{ valid: boolean, error?: string }}
+  //  */
+  // const validateFile = (file, docType) => {
+  //   const ext = getExtension(file.name);
+  //   const allowed = CONFIG.ACCEPTED[docType];
+  //   const maxBytes = CONFIG.MAX_SIZE_MB * 1024 * 1024;
 
-    if (!allowed.includes(ext)) {
-      return {
-        valid: false,
-        error: `Format non accepté. Formats valides : ${allowed.join(', ')}`,
-      };
-    }
+  //   if (!allowed.includes(ext)) {
+  //     return {
+  //       valid: false,
+  //       error: `Format non accepté. Formats valides : ${allowed.join(', ')}`,
+  //     };
+  //   }
 
-    if (file.size > maxBytes) {
-      return {
-        valid: false,
-        error: `Fichier trop volumineux. Maximum : ${CONFIG.MAX_SIZE_MB} Mo`,
-      };
-    }
+  //   if (file.size > maxBytes) {
+  //     return {
+  //       valid: false,
+  //       error: `Fichier trop volumineux. Maximum : ${CONFIG.MAX_SIZE_MB} Mo`,
+  //     };
+  //   }
 
-    if (file.size === 0) {
-      return { valid: false, error: 'Le fichier est vide.' };
-    }
+  //   if (file.size === 0) {
+  //     return { valid: false, error: 'Le fichier est vide.' };
+  //   }
 
-    return { valid: true };
-  };
+  //   return { valid: true };
+  // };
 
   /* ── 5. MISE À JOUR DE L'UI ────────────────────────────────
    * Toutes les fonctions qui touchent au DOM sont ici.
@@ -292,7 +292,7 @@
    * @param {'cv'|'t4'|'rl1'} docType
    */
   const handleFile = (file, docType) => {
-    const result = validateFile(file, docType);
+    const result = FileValidator.validate(file, docType);
 
     if (!result.valid) {
       showZoneError(docType, result.error);
