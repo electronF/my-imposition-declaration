@@ -7,16 +7,16 @@
 
   "icons": {
     "16":  "assets/favicon.ico",
-    "48":  "assets/logo.png",
-    "128": "assets/logo.png"
+    "48":  "assets/logo-48.png",
+    "128": "assets/logo-128.png"
   },
 
   "action": {
     "default_popup": "popup/popup.html",
     "default_icon": {
       "16":  "assets/favicon.ico",
-      "48":  "assets/logo.png",
-      "128": "assets/logo.png"
+      "48":  "assets/logo-48.png",
+      "128": "assets/logo-128.png"
     },
     "default_title": "AxOvide — Téléverser vos documents"
   },
